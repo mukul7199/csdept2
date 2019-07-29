@@ -26,7 +26,12 @@ const upload = multer({
 
 router.get("/", (req, res) => {
   Event.find()
-    .then(events => res.send(events))
+    .then(events => {
+      res.send({
+        count: events.length,
+        events: events
+      });
+    })
     .catch(e => console.log(e));
 });
 
