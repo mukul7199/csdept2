@@ -28,13 +28,9 @@ router.get("/", (req, res) => {
   Event.find()
     .then(events => res.send(events))
     .catch(e => console.log(e));
-
-  // res.send({ message: "Events route" });
 });
 
 router.post("/", upload.single("image"), (req, res) => {
-  console.log(req.file);
-  // console.log(new Date().toUTCString());
   const event = new Event({
     title: req.body.title,
     body: req.body.body,
