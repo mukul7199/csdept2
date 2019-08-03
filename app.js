@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const events = require("./routes/events");
+const news = require("./routes/news");
+const showcaseItems = require("./routes/showcaseItems");
 
 const port = process.env.PORT || 3000;
 const MONGODB_URI =
@@ -41,6 +43,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/events", events);
+app.use("/news", news);
+app.use("/showcaseItems", showcaseItems);
 
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
