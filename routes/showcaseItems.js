@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", upload.single("image"), (req, res) => {
-  let date = moment(req.body.date, "x");
+  let date = moment(req.body.date, "DD-MM-YYYY").format("x");
   const item = new ShowcaseItem({
     title: req.body.title,
     date: date,
