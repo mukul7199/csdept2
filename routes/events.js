@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   Event.find()
+    .sort([["date", "descending"]])
     .then(events => {
       res.send({
         count: events.length,
