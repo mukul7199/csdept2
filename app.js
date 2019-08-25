@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 const events = require("./routes/events");
 const news = require("./routes/news");
+const calendars = require("./routes/calendars");
 const showcaseItems = require("./routes/showcaseItems");
 
 const port = process.env.PORT || 3000;
@@ -44,6 +45,7 @@ app.get("/", (req, res) => {
 
 app.use("/events", events);
 app.use("/news", news);
+app.use("/calendars", calendars);
 app.use("/showcaseItems", showcaseItems);
 
 app.listen(port, () => {
