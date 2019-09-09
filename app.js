@@ -6,6 +6,7 @@ const events = require("./routes/events");
 const news = require("./routes/news");
 const calendars = require("./routes/calendars");
 const showcaseItems = require("./routes/showcaseItems");
+const emails = require("./routes/emails");
 
 const port = process.env.PORT || 3000;
 const MONGODB_URI =
@@ -47,6 +48,7 @@ app.use("/events", events);
 app.use("/news", news);
 app.use("/calendars", calendars);
 app.use("/showcaseItems", showcaseItems);
+app.use("/emails", emails);
 
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
