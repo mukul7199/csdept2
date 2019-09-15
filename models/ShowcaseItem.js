@@ -2,9 +2,9 @@ var mongoose = require("mongoose");
 
 const ShowcaseSchema = mongoose.Schema({
   title: { type: String, required: true, trim: true },
-  image: { type: String, required: true },
-  date: { type: String },
-  redirect: { type: String, required: true }
+  priority: { type: Number, default: 3 },
+  image: { type: String, required: true }
+  // date: { type: String },
 });
 
 const ShowcaseItem = new mongoose.model("ShowcaseItem", ShowcaseSchema);
