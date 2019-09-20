@@ -20,7 +20,7 @@ router.post("/", (req, res) => {
   email
     .save()
     .then(email => res.send(email))
-    .catch(e => res.status(400).send({ message: "kuch gadbad hui" }));
+    .catch(e => res.status(400).send(e));
 });
 
 module.exports = router;
