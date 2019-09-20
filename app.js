@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const events = require("./routes/events");
 const news = require("./routes/news");
@@ -14,6 +15,7 @@ const MONGODB_URI =
   "mongodb://mukul8299:mukul123@ds151247.mlab.com:51247/deptwebsite";
 const app = express();
 
+app.use(cors());
 app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.json());
 mongoose.set("useCreateIndex", true);
