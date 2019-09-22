@@ -23,4 +23,14 @@ router.post("/", (req, res) => {
     .catch(e => res.status(400).send(e));
 });
 
+router.delete("/:id", (req, res) => {
+  Email.findByIdAndDelete(req.params.id).then(emailId => {
+    res.send(emailId);
+  });
+});
+
+// router.delete("/", (req, res) => {
+//   Email.deleteMany().then(res.send({ message: "done" }));
+// });
+
 module.exports = router;
