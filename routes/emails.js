@@ -1,4 +1,5 @@
 const express = require("express");
+const nodemailer = require("nodemailer");
 const Email = require("../models/Email");
 const router = express.Router();
 
@@ -14,13 +15,50 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const email = new Email({
-    id: req.body.id
-  });
-  email
-    .save()
-    .then(email => res.send(email))
-    .catch(e => res.status(400).send(e));
+  const emailId = req.body.id;
+  Email.find({ id: emailId })
+    .then(emails => {
+      if (emails.length > 0)
+        res.send({ message: "Email is already registered" });
+      else {
+        let transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "mukul8299@gmail.com",
+            pass: "jkwallputty"
+          }
+        });
+        let helperOptions = {
+          from: "LNCTS <lnctscse@gmail.com>",
+          to: emailId,
+          subject: "First email that you get on registering",
+          html: `
+          <h1>Title</h1>
+          <h2>subtitle</h2>
+          <p>body in paragraphs</p>
+          <p>body in paragraphs</p>
+          <p>body in paragraphs</p>
+        `
+        };
+        transporter.sendMail(helperOptions).then(info => {
+          console.log(info.accepted.length);
+          if (info.accepted.length > 0) {
+            const email = new Email({
+              id: emailId
+            });
+            email
+              .save()
+              .then(email =>
+                res.send({ message: "Thanks for subscribing with us" })
+              )
+              .catch(e => res.status(400).send(e));
+          } else {
+            res.send({ message: "email is not valid" });
+          }
+        });
+      }
+    })
+    .catch(e => console.log(e));
 });
 
 router.delete("/:id", (req, res) => {
@@ -29,8 +67,8 @@ router.delete("/:id", (req, res) => {
   });
 });
 
-// router.delete("/", (req, res) => {
-//   Email.deleteMany().then(res.send({ message: "done" }));
-// });
+router.delete("/", (req, res) => {
+  Email.deleteMany().then(res.send({ message: "done" }));
+});
 
 module.exports = router;
