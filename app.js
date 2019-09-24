@@ -29,7 +29,7 @@ app.use(function(req, res, next) {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
-  res.header("Access-Control-Allow-Headers", "Content-Type, authorization");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
   res.header("Access-Control-Allow-Credentials", true);
   return next();
 });
