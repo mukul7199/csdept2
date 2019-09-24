@@ -1,6 +1,10 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const Email = require("../models/Email");
+const config = require("../config");
+
+const senderId = config.SENDER_EMAIL_ID;
+const senderPassword = config.SENDER_PASSWORD;
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -24,8 +28,8 @@ router.post("/", (req, res) => {
         let transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
-            user: "mukul8299@gmail.com",
-            pass: "jkwallputty"
+            user: senderId,
+            pass: senderPassword
           }
         });
         let helperOptions = {
