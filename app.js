@@ -14,27 +14,27 @@ const port = process.env.PORT || config.PORT;
 const MONGODB_URI = process.env.MONGODB_URI || config.MongoDB_URI;
 const app = express();
 
-// app.use(cors());
+app.use(cors());
 app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.json());
 mongoose.set("useCreateIndex", true);
 
-app.use((req, res, next) => {
-  // var allowedOrigins = ["http://localhost:3000", "https://localhost:3000"];
-  // var origin = req.headers.origin;
-  // if (allowedOrigins.indexOf(origin) > -1) {
+// app.use((req, res, next) => {
+//   // var allowedOrigins = ["http://localhost:3000", "https://localhost:3000"];
+//   // var origin = req.headers.origin;
+//   // if (allowedOrigins.indexOf(origin) > -1) {
 
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  // return next();
-  // }
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
-  res.header("Access-Control-Allow-Credentials", true);
-  return next();
-});
+//   res.header("Access-Control-Allow-Origin", req.headers.origin);
+//   // return next();
+//   // }
+//   res.header(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+//   );
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
+//   res.header("Access-Control-Allow-Credentials", true);
+//   return next();
+// });
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true }, err => {
   if (err) return console.log(err);
