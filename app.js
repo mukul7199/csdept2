@@ -23,7 +23,8 @@ app.use((req, res, next) => {
   // var allowedOrigins = ["http://localhost:3000", "https://localhost:3000"];
   // var origin = req.headers.origin;
   // if (allowedOrigins.indexOf(origin) > -1) {
-  res.header("Access-Control-Allow-Origin", "*");
+
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
   // return next();
   // }
   // res.header(
