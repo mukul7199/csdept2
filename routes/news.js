@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   News.deleteMany({
     date: {
       $lte: moment()
-        .subtract(5, "days")
+        .subtract(10, "days")
         .format("x")
     }
   })

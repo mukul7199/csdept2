@@ -3,16 +3,15 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const config = require("./config");
 const events = require("./routes/events");
 const news = require("./routes/news");
 const calendars = require("./routes/calendars");
 const showcaseItems = require("./routes/showcaseItems");
 const emails = require("./routes/emails");
 
-const port = process.env.PORT || 3000;
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb://mukul8299:mukul123@ds151247.mlab.com:51247/deptwebsite";
+const port = process.env.PORT || config.PORT;
+const MONGODB_URI = process.env.MONGODB_URI || config.MongoDB_URI;
 const app = express();
 
 app.use(cors());
