@@ -13,12 +13,16 @@ const upload = multer({
   storage: storage,
   limits: {
     fileSize: 1024 * 1024 * 5
-  },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png")
-      cb(null, true);
-    else cb("Uploaded file is not an image", false);
   }
+  // fileFilter: (req, file, cb) => {
+  //   if (
+  //     file.mimetype === "image/jpeg" ||
+  //     file.mimetype === "image/png" ||
+  //     path.extension(file.originalname) !== ".pdf"
+  //   )
+  //     cb(null, true);
+  //   else cb("Uploaded file is not an image or pdf", false);
+  // }
 });
 
 module.exports = upload;

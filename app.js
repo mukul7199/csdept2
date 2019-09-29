@@ -4,14 +4,17 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const config = require("./config");
-const events = require("./routes/events");
 const news = require("./routes/news");
-const calendars = require("./routes/calendars");
-const showcaseItems = require("./routes/showcaseItems");
+const events = require("./routes/events");
 const emails = require("./routes/emails");
+const schemes = require("./routes/schemes");
+const syllabus = require("./routes/syllabus");
+const calendars = require("./routes/calendars");
+const achievements = require("./routes/achievements");
+const showcaseItems = require("./routes/showcaseItems");
 
-const port = process.env.PORT || config.PORT;
-const MONGODB_URI = process.env.MONGODB_URI || config.MongoDB_URI;
+const port = config.PORT;
+const MONGODB_URI = config.MongoDB_URI;
 const app = express();
 
 app.use(cors());
@@ -47,11 +50,14 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/events", events);
 app.use("/news", news);
-app.use("/calendars", calendars);
-app.use("/showcaseItems", showcaseItems);
+app.use("/events", events);
 app.use("/emails", emails);
+app.use("/schemes", schemes);
+app.use("/syllabus", syllabus);
+app.use("/calendars", calendars);
+app.use("/achievements", achievements);
+app.use("/showcaseItems", showcaseItems);
 
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);

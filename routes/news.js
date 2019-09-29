@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   News.deleteMany({
     date: {
       $lte: moment()
-        .subtract(10, "days")
+        .subtract(50, "days")
         .format("x")
     }
   })
@@ -24,9 +24,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  let formattedDate = moment(req.body.date, "DD-MM-YYYY").format(
-    "MMMM Do YYYY"
-  );
+  let formattedDate = moment(req.body.date, "DD-MM-YYYY").format("MMM Do YYYY");
   let date = moment(req.body.date, "DD-MM-YYYY").format("x");
 
   const news = new News({
@@ -39,6 +37,12 @@ router.post("/", (req, res) => {
     .save()
     .then(news => res.send(news))
     .catch(e => res.status(400).send(e));
+});
+
+router.delete("/:id", (req, res) => {
+  News.findByIdAndDelete(req.params.id).then(news => {
+    res.send(news);
+  });
 });
 
 module.exports = router;
