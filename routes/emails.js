@@ -63,7 +63,13 @@ router.post("/", (req, res) => {
   //     }
   //   })
   //   .catch(e => console.log(e));
-  res.send({ data: req.body.id });
+  const email = new Email({
+    id: emailId
+  });
+  email
+    .save()
+    .then(email => res.send({ message: "Thanks for subscribing with us" }))
+    .catch(e => res.status(400).send(e));
 });
 
 router.delete("/:id", (req, res) => {
