@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  // const emailId = req.body.id;
+  const emailId = req.body.id;
   // Email.find({ id: emailId })
   //   .then(emails => {
   //     if (emails.length > 0)
