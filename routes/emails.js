@@ -68,7 +68,7 @@ router.post("/", (req, res) => {
   });
   email
     .save()
-    .then(email => res.send({ message: "Thanks for subscribing with us" }))
+    .then(email => res.send({ email }))
     .catch(e => res.status(400).send(e));
 });
 
