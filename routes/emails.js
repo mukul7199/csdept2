@@ -63,6 +63,25 @@ router.post("/", (req, res) => {
   //     }
   //   })
   //   .catch(e => console.log(e));
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: senderId,
+      pass: senderPassword
+    }
+  });
+  let helperOptions = {
+    from: "LNCTS <lnctscse@gmail.com>",
+    to: emailId,
+    subject: "First email that you get on registering",
+    html: `
+          <h1>You are now subscribed!</h1>
+          <h2>Thanks for registering your email id with us</h2>
+          <p>You have been added to our mailing list</p>
+          <p>Check out LNCTS CSE <a href="#">here</a></p>
+        `
+  };
+  transporter.sendMail(helperOptions);
   const email = new Email({
     id: emailId
   });
