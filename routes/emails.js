@@ -106,32 +106,19 @@ router.get("/send", (req, res) => {
       }
     })
     .then(() => {
-      let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: senderId, // "lnctscse@mail.ee", // senderId,
-          pass: senderPassword // "q7cEZz*2v4rKtQs"
-        }
-      });
-
-      console.log("created");
-      console.log(emailArr);
-
-      let helperOptions = {
-        from: "LNCTS <lnctscse@gmail.com>",
+      // using Twilio SendGrid's v3 Node.js Library
+      // https://github.com/sendgrid/sendgrid-nodejs
+      const sgMail = require("@sendgrid/mail");
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
         to: emailArr,
-        subject: "subject",
-        html: `
-            <h1>HI</h1>
-            <h2>HI</h2>
-            <p>HI</p>
-          `
+        from: "lnctscse@gmail.com",
+        subject: "Sending with Twilio SendGrid is Fun",
+        text: "and easy to do anywhere, even with Node.js",
+        html: "<strong>and easy to do anywhere, even with Node.js</strong>"
       };
-
-      transporter
-        .sendMail(helperOptions)
-        .then(info => res.send(info))
-        .catch(e => console.log(e));
+      sgMail.send(msg);
+      res.send("SENT");
     });
 });
 

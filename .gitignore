@@ -1,3 +1,4 @@
 /node_modules
 .env
 notify.js
+sendgrid.env
