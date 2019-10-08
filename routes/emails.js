@@ -109,7 +109,9 @@ router.get("/send", (req, res) => {
       // using Twilio SendGrid's v3 Node.js Library
       // https://github.com/sendgrid/sendgrid-nodejs
       const sgMail = require("@sendgrid/mail");
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      sgMail.setApiKey(
+        "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"
+      );
       const msg = {
         to: emailArr,
         from: "lnctscse@gmail.com",
