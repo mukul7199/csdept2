@@ -97,6 +97,44 @@ router.delete("/:id", (req, res) => {
   });
 });
 
+router.get("/send", (req, res) => {
+  let emailArr = [];
+  Email.find()
+    .then(emails => {
+      for (var i = 0; i < emails.length; i++) {
+        emailArr.push(emails[i].id);
+      }
+    })
+    .then(() => {
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: senderId, // "lnctscse@mail.ee", // senderId,
+          pass: senderPassword // "q7cEZz*2v4rKtQs"
+        }
+      });
+
+      console.log("created");
+      console.log(emailArr);
+
+      let helperOptions = {
+        from: "LNCTS <lnctscse@gmail.com>",
+        to: emailArr,
+        subject: "subject",
+        html: `
+            <h1>HI</h1>
+            <h2>HI</h2>
+            <p>HI</p>
+          `
+      };
+
+      transporter
+        .sendMail(helperOptions)
+        .then(info => res.send(info))
+        .catch(e => console.log(e));
+    });
+});
+
 router.delete("/", (req, res) => {
   Email.deleteMany().then(res.send({ message: "done" }));
 });
