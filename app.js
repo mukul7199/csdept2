@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const config = require("./config");
+const Email = require("./models/Email");
 const news = require("./routes/news");
 const events = require("./routes/events");
 const emails = require("./routes/emails");
@@ -47,6 +48,27 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true }, err => {
 app.get("/", (req, res) => {
   res.send({
     message: "Welcome"
+  });
+});
+
+app.get("/confirmation/:token", (req, res) => {
+  const token = req.params.token;
+  if (!token)
+    return res.send({
+      msg: "We were unable to find a valid token. Your token my have expired."
+    });
+
+  Email.findOne({ _id: token._userId }).then(user => {
+    if (!user)
+      return res.send({
+        msg: "We were unable to find a valid user for this token"
+      });
+    if (user.isVerified)
+      return res.send({ msg: "This user has already been verified." });
+    user.isVerified = true;
+    user.save.then(() => {
+      res.send({ msg: "The account has been verified" });
+    });
   });
 });
 

@@ -1,6 +1,9 @@
 const express = require("express");
+const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 const Email = require("../models/Email");
+const Token = require("../models/Token");
 const config = require("../config");
 
 const senderId = config.SENDER_EMAIL_ID;
@@ -19,76 +22,44 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const emailId = req.body.id;
-  // Email.find({ id: emailId })
-  //   .then(emails => {
-  //     if (emails.length > 0)
-  //       res.send({ message: "Email is already registered" });
-  //     else {
-  //       let transporter = nodemailer.createTransport({
-  //         service: "gmail",
-  //         auth: {
-  //           user: senderId,
-  //           pass: senderPassword
-  //         }
-  //       });
-  //       let helperOptions = {
-  //         from: "LNCTS <lnctscse@gmail.com>",
-  //         to: emailId,
-  //         subject: "First email that you get on registering",
-  //         html: `
-  //         <h1>Title</h1>
-  //         <h2>subtitle</h2>
-  //         <p>body in paragraphs</p>
-  //         <p>body in paragraphs</p>
-  //         <p>body in paragraphs</p>
-  //       `
-  //       };
-  //       transporter.sendMail(helperOptions).then(info => {
-  //         console.log(info.accepted.length);
-  //         if (info.accepted.length > 0) {
-  //           const email = new Email({
-  //             id: emailId
-  //           });
-  //           email
-  //             .save()
-  //             .then(email =>
-  //               res.send({ message: "Thanks for subscribing with us" })
-  //             )
-  //             .catch(e => res.status(400).send(e));
-  //         } else {
-  //           res.send({ message: "email is not valid" });
-  //         }
-  //       });
-  //     }
-  //   })
-  //   .catch(e => console.log(e));
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: senderId,
-      pass: senderPassword
-    }
+  // Make sure the email doesn't exist already
+  Email.find({ id: req.body.id }).then(user => {
+    if (user.length > 0)
+      return res.send({ message: "This email already exists!" });
+    const emailId = req.body.id;
+    const email = new Email({ id: emailId });
+    email.save().then(email => {
+      // Create a new verification token for this email
+      var token = new Token({
+        _userId: email._id,
+        token: crypto.randomBytes(16).toString("hex")
+      });
+
+      // Save the verification token
+      token.save().then(token => {
+        sgMail.setApiKey(
+          "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" ||
+            process.snv.SENDGRID_API_KEY
+        );
+        const msg = {
+          to: emailId,
+          from: "LNCTS CSE <lnctscse@gmail.com>",
+          subject: "Thanks for subscribing with us",
+          html: `
+            <h1>You are now subscribed!</h1>
+            <h2>Thanks for registering your email id with us</h2>
+            <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"https://localhost:4000/confirmation/" +
+              token.token}>link</a></p>
+            <p>Check out LNCTS CSE <a href="#">here</a></p>
+          `
+        };
+        sgMail.send(msg);
+        res.send({
+          message: "Thanks for subscribing!"
+        });
+      });
+    });
   });
-  let helperOptions = {
-    from: "LNCTS <lnctscse@gmail.com>",
-    to: emailId,
-    subject: "First email that you get on registering",
-    html: `
-          <h1>You are now subscribed!</h1>
-          <h2>Thanks for registering your email id with us</h2>
-          <p>You have been added to our mailing list</p>
-          <p>Check out LNCTS CSE <a href="#">here</a></p>
-        `
-  };
-  transporter.sendMail(helperOptions);
-  const email = new Email({
-    id: emailId
-  });
-  email
-    .save()
-    .then(email => res.send({ email }))
-    .catch(e => res.status(400).send(e));
 });
 
 router.delete("/:id", (req, res) => {
@@ -97,32 +68,21 @@ router.delete("/:id", (req, res) => {
   });
 });
 
-router.get("/send", (req, res) => {
-  let emailArr = [];
-  Email.find()
-    .then(emails => {
-      for (var i = 0; i < emails.length; i++) {
-        emailArr.push(emails[i].id);
-      }
-    })
-    .then(() => {
-      // using Twilio SendGrid's v3 Node.js Library
-      // https://github.com/sendgrid/sendgrid-nodejs
-      const sgMail = require("@sendgrid/mail");
-      sgMail.setApiKey(
-        "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"
-      );
-      const msg = {
-        to: emailArr,
-        from: "lnctscse@gmail.com",
-        subject: "Sending with Twilio SendGrid is Fun",
-        text: "and easy to do anywhere, even with Node.js",
-        html: "<strong>and easy to do anywhere, even with Node.js</strong>"
-      };
-      sgMail.send(msg);
-      res.send("SENT");
-    });
-});
+// router.get("/send", (req, res) => {
+//   let emailArr = [];
+//   Email.find()
+//     .then(emails => {
+//       for (var i = 0; i < emails.length; i++) {
+//         emailArr.push(emails[i].id);
+//       }
+//     })
+//     .then(() => {
+//       // using Twilio SendGrid's v3 Node.js Library
+//       // https://github.com/sendgrid/sendgrid-nodejs
+//       const sgMail = require("@sendgrid/mail");
+
+//     });
+// });
 
 router.delete("/", (req, res) => {
   Email.deleteMany().then(res.send({ message: "done" }));
