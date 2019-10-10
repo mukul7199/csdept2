@@ -48,7 +48,7 @@ router.post("/", (req, res) => {
           html: `
             <h1>You are now subscribed!</h1>
             <h2>Thanks for registering your email id with us</h2>
-            <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"https://localhost:4000/confirmation/" +
+            <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"https://csdept-api.herokuapp.com/confirmation/" +
               token.token}>link</a></p>
             <p>Check out LNCTS CSE <a href="#">here</a></p>
           `
