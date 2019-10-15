@@ -57,12 +57,14 @@ app.get("/confirmation/:token", (req, res) => {
     return res.send({
       msg: "We were unable to find a valid token. Your token my have expired."
     });
+  console.log("token userid", token._userId);
 
   Email.findOne({ _id: token._userId }).then(user => {
     if (!user)
       return res.send({
         msg: "We were unable to find a valid user for this token"
       });
+    console.log(user);
     if (user.isVerified)
       return res.send({ msg: "This user has already been verified." });
     user.isVerified = true;

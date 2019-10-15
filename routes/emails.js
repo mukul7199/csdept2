@@ -39,7 +39,7 @@ router.post("/", (req, res) => {
       token.save().then(token => {
         sgMail.setApiKey(
           "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" ||
-            process.snv.SENDGRID_API_KEY
+            process.env.SENDGRID_API_KEY
         );
         const msg = {
           to: emailId,
@@ -48,7 +48,7 @@ router.post("/", (req, res) => {
           html: `
             <h1>You are now subscribed!</h1>
             <h2>Thanks for registering your email id with us</h2>
-            <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"https://csdept-api.herokuapp.com/confirmation/" +
+            <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"192.168.42.171:4000/confirmation/" +
               token.token}>link</a></p>
             <p>Check out LNCTS CSE <a href="#">here</a></p>
           `
