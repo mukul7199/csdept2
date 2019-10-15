@@ -1,5 +1,5 @@
 const express = require("express");
-const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
 const Email = require("../models/Email");
@@ -30,37 +30,78 @@ router.post("/", (req, res) => {
     const email = new Email({ id: emailId });
     email.save().then(email => {
       // Create a new verification token for this email
-      var token = new Token({
-        _userId: email._id,
-        token: crypto.randomBytes(16).toString("hex")
-      });
+      var info = {
+        email: email,
+        expiry: new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+      };
 
-      // Save the verification token
-      token.save().then(token => {
-        sgMail.setApiKey(
-          "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" ||
-            process.env.SENDGRID_API_KEY
-        );
-        const msg = {
-          to: emailId,
-          from: "LNCTS CSE <lnctscse@gmail.com>",
-          subject: "Thanks for subscribing with us",
-          html: `
+      var token = jwt.sign(info, "secret");
+      sgMail.setApiKey(
+        "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" ||
+          process.env.SENDGRID_API_KEY
+      );
+      const msg = {
+        to: emailId,
+        from: "LNCTS CSE <lnctscse@gmail.com>",
+        subject: "Thanks for subscribing with us",
+        html: `
             <h1>You are now subscribed!</h1>
             <h2>Thanks for registering your email id with us</h2>
-            <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"192.168.42.171:4000/confirmation/" +
-              token.token}>link</a></p>
+            <p>You have been added to our mailing list. Please verify your email address by clicking on
+             <a href=${"https://csdept-api.herokuapp.com/confirmation/" +
+               token}>link</a></p>
             <p>Check out LNCTS CSE <a href="#">here</a></p>
           `
-        };
-        sgMail.send(msg);
-        res.send({
-          message: "Thanks for subscribing!"
-        });
+      };
+      sgMail.send(msg);
+      res.send({
+        message: "Thanks for subscribing!"
       });
     });
   });
 });
+
+// router.post("/", (req, res) => {
+//   // Make sure the email doesn't exist already
+//   Email.find({ id: req.body.id }).then(user => {
+//     if (user.length > 0)
+//       return res.send({ message: "This email already exists!" });
+//     const emailId = req.body.id;
+//     const email = new Email({ id: emailId });
+//     email.save().then(email => {
+//       // Create a new verification token for this email
+
+//       var token = new Token({
+//         _userId: email._id,
+//         token: crypto.randomBytes(16).toString("hex")
+//       });
+
+//       // Save the verification token
+//       token.save().then(token => {
+//         sgMail.setApiKey(
+//           "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" ||
+//             process.env.SENDGRID_API_KEY
+//         );
+//         const msg = {
+//           to: emailId,
+//           from: "LNCTS CSE <lnctscse@gmail.com>",
+//           subject: "Thanks for subscribing with us",
+//           html: `
+//             <h1>You are now subscribed!</h1>
+//             <h2>Thanks for registering your email id with us</h2>
+//             <p>You have been added to our mailing list. Please verify your email address by clicking on <a href=${"https://csdept-api.herokuapp.com/confirmation/" +
+//               token.token}>link</a></p>
+//             <p>Check out LNCTS CSE <a href="#">here</a></p>
+//           `
+//         };
+//         sgMail.send(msg);
+//         res.send({
+//           message: "Thanks for subscribing!"
+//         });
+//       });
+//     });
+//   });
+// });
 
 router.delete("/:id", (req, res) => {
   Email.findByIdAndDelete(req.params.id).then(emailId => {

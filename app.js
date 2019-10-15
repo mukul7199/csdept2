@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
 const cors = require("cors");
 
 const config = require("./config");
@@ -53,25 +54,42 @@ app.get("/", (req, res) => {
 
 app.get("/confirmation/:token", (req, res) => {
   const token = req.params.token;
-  if (!token)
-    return res.send({
-      msg: "We were unable to find a valid token. Your token my have expired."
+  var data = jwt.decode(token, "secret");
+  if (new Date(data.expiry) > new Date()) {
+    Email.findOne({ id: data.email.id }).exec(function(err, email) {
+      if (err) {
+        console.log(err);
+        res.send(err);
+      } else if (!email) {
+        res.send({ msg: "User not found" });
+      } else {
+        email.isVerified = true;
+        email
+          .save()
+          .then(email => res.send({ msg: "Verified" }))
+          .catch(e => res.send(e));
+      }
     });
-  console.log("token userid", token._userId);
+  }
+  // if (!token)
+  //   return res.send({
+  //     msg: "We were unable to find a valid token. Your token my have expired."
+  //   });
+  // console.log("token userid", token._userId);
 
-  Email.findOne({ _id: token._userId }).then(user => {
-    if (!user)
-      return res.send({
-        msg: "We were unable to find a valid user for this token"
-      });
-    console.log(user);
-    if (user.isVerified)
-      return res.send({ msg: "This user has already been verified." });
-    user.isVerified = true;
-    user.save.then(() => {
-      res.send({ msg: "The account has been verified" });
-    });
-  });
+  // Email.findOne({ _id: token._userId }).then(user => {
+  //   if (!user)
+  //     return res.send({
+  //       msg: "We were unable to find a valid user for this token"
+  //     });
+  //   console.log(user);
+  //   if (user.isVerified)
+  //     return res.send({ msg: "This user has already been verified." });
+  //   user.isVerified = true;
+  //   user.save.then(() => {
+  //     res.send({ msg: "The account has been verified" });
+  //   });
+  // });
 });
 
 app.use("/news", news);
